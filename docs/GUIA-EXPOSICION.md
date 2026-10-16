@@ -56,6 +56,7 @@ El sistema tiene **dos roles**:
 | Sin correos. | Correos de confirmación de compra, aviso de venta y cambio de estado. |
 | No existía. | Panel de vendedor: resumen, productos, ventas y datos de la tienda. |
 | No existía. | Historial de pedidos del comprador. |
+| No existía. | Página **Mi cuenta**: cambiar nombre, celular y contraseña. |
 
 También se corrigieron errores del diseño original:
 - `index.html` cargaba `script.js`, pero el archivo se llamaba `java.js`, así que el catálogo no aparecía.
@@ -86,9 +87,9 @@ También se corrigieron errores del diseño original:
 
 | | |
 |---|---|
-| Páginas | 7 (tienda, login, registro, checkout, pedido, mis pedidos, panel de vendedor) |
+| Páginas | 8 (tienda, login, registro, checkout, pedido, mis pedidos, mi cuenta, panel de vendedor) |
 | Tablas en la base de datos | 8 |
-| Archivos de API | 4 (`auth`, `catalogo`, `pedidos`, `vendedor`) con 22 acciones en total |
+| Archivos de API | 4 (`auth`, `catalogo`, `pedidos`, `vendedor`) con 24 acciones en total |
 | Tipos de correo | 3 (compra, nueva venta, cambio de estado) |
 | Estados de un pedido | 5 (nuevo, preparando, enviado, entregado, cancelado) |
 | Datos de demo | 2 tiendas, 18 productos, 122 combinaciones de talla y color, 4 pedidos |
@@ -209,6 +210,7 @@ JJSTORE/
 │   ├── checkout.html        Datos de envío y pago simulado
 │   ├── pedido.html          Confirmación / detalle de un pedido
 │   ├── mis-pedidos.html     Historial del comprador
+│   ├── cuenta.html          Mi cuenta: editar nombre, celular y contraseña
 │   ├── vendedor.html        Panel de vendedor
 │   ├── css/                 Diseño
 │   │   ├── style.css        Tienda (colores principales, encabezado, tarjetas, carrito)
@@ -222,9 +224,10 @@ JJSTORE/
 │   │   ├── checkout.js      checkout.html
 │   │   ├── pedido.js        pedido.html
 │   │   ├── mis-pedidos.js   mis-pedidos.html
+│   │   ├── cuenta.js        cuenta.html
 │   │   └── vendedor.js      vendedor.html
 │   ├── api/                 Endpoints: reciben peticiones y responden JSON
-│   │   ├── auth.php         Sesión, registro, login, logout, abrir tienda
+│   │   ├── auth.php         Sesión, registro, login, logout, abrir tienda, editar cuenta
 │   │   ├── catalogo.php     Categorías y productos
 │   │   ├── pedidos.php      Cotizar carrito, comprar, mis pedidos, ver correo
 │   │   └── vendedor.php     Resumen, productos, ventas, datos de la tienda
@@ -602,6 +605,7 @@ configurables en el archivo `.env`:
 | **Datos de tarjeta** | Guardar tarjetas es un riesgo enorme. | **No se guardan**: solo marca y últimos 4 dígitos. |
 | **Archivos privados expuestos** | Que alguien descargue `.env` o el código PHP. | Solo `public/` es accesible; `.htaccess` bloquea el resto (comprobado: responde 403). |
 | **Robo de sesión** | Leer la cookie de sesión con JavaScript. | Cookie `HttpOnly` y se **regenera** el identificador al iniciar sesión. |
+| **Cambiar la contraseña ajena** | Alguien usa un computador con tu sesión abierta e intenta cambiarte la contraseña. | Para cambiarla se pide la **contraseña actual**; después se **renueva la sesión** y el token. |
 
 ---
 
@@ -611,7 +615,8 @@ configurables en el archivo `.env`:
 |---|---|---|
 | **Colores generales** del sitio | `public/css/style.css` | El bloque `:root` al inicio: `--fondo`, `--superficie`, `--blanco`, `--cenizo` (color de acento), `--gris`, `--borde`, `--error`. Cambiar ahí cambia todo el sitio. |
 | Colores del login y registro | `public/css/login.css` | Bloque `:root` al inicio. |
-| Estilo del checkout, pedidos y panel de vendedor | `public/css/panel.css` | Secciones comentadas: *Checkout*, *Confirmación y mis pedidos*, *Panel de vendedor*. |
+| Estilo del checkout, pedidos, mi cuenta y panel de vendedor | `public/css/panel.css` | Secciones comentadas: *Checkout*, *Confirmación y mis pedidos*, *Panel de vendedor*, *Mi cuenta* (al final). |
+| Opciones del menú del usuario (Mis pedidos, Mi cuenta, Cerrar sesión…) | `public/js/api.js` | Función `pintarSesion`. |
 | Portada (texto grande e imagen de fondo) | Texto: `public/index.html` (sección `hero`). Imagen: `public/css/style.css` (regla `.hero`, propiedad `background`). | |
 | Logo "JJSTORE." | En cada `.html`, dentro de `<a class="logo">`. | |
 | Menú superior y pie de página | `public/index.html` (`<nav class="menu">` y `<footer>`). | |
@@ -642,6 +647,7 @@ configurables en el archivo `.env`:
 | Tamaño máximo de las fotos | `app/imagenes.php` | `IMAGEN_MAX_BYTES`. |
 | Textos de los correos y a quién se envían | `app/notificaciones.php` (asuntos y destinatarios) y `app/plantillas/` (contenido). | |
 | Validaciones de los formularios (largo de nombre, etc.) | El endpoint correspondiente en `public/api/` | Busca las líneas `$v->texto(...)`, `$v->entero(...)`. |
+| Reglas de "Mi cuenta" (qué datos se pueden editar, largo mínimo de la contraseña) | `public/api/auth.php` | `case 'actualizar-perfil'` y `case 'cambiar-password'`. |
 | Agregar una acción nueva a la API | El archivo de `public/api/` del tema | Agrega un nuevo `case 'nombre-accion':` dentro del `switch`. |
 | Estructura de la base de datos | `database/schema.sql` | Aplica el mismo cambio en `database/jjstore.sql` (que contiene una copia de `schema.sql` seguida de `datos-demo.sql`), o importa `schema.sql` y luego `datos-demo.sql` por separado. |
 
@@ -658,7 +664,7 @@ const ENVIO_GRATIS_DESDE = 250000;
 
 | Prueba | Qué se verificó | Resultado |
 |---|---|---|
-| **Prueba automática de la API** (`tests/prueba-api.php`, 42 verificaciones) | Sesión y token CSRF, login correcto e incorrecto, permisos por rol, cálculo de precios y envío, falta de stock, tarjeta rechazada y vencida, compra aprobada, descuento de stock, correo, que un usuario no vea pedidos ajenos, registro, abrir tienda, resumen del vendedor, cambios de estado válidos e inválidos, devolución de stock al cancelar, crear/editar/ocultar/eliminar productos, rechazo de un archivo falso como imagen. | ✅ 42/42 |
+| **Prueba automática de la API** (`tests/prueba-api.php`, 50 verificaciones) | Sesión y token CSRF, login correcto e incorrecto, permisos por rol, cálculo de precios y envío, falta de stock, tarjeta rechazada y vencida, compra aprobada, descuento de stock, correo, que un usuario no vea pedidos ajenos, registro, abrir tienda, editar nombre y celular, cambiar contraseña (con la actual incorrecta, con la nueva muy corta, y que después solo sirva la nueva), resumen del vendedor, cambios de estado válidos e inválidos, devolución de stock al cancelar, crear/editar/ocultar/eliminar productos, rechazo de un archivo falso como imagen. | ✅ 50/50 |
 | **Pruebas en navegador real** (Chrome automatizado) | Recorrido completo del comprador y del vendedor en computador y celular, sin errores en la consola. | ✅ |
 | **Compatibilidad** | Apache de WAMP con PHP 8.3, servidor integrado de PHP 8.2, MySQL 8.4 y MariaDB 11.4. | ✅ |
 | **Envío de correo por SMTP** | Se entregaron los correos de compra, venta y cambio de estado a un servidor SMTP de prueba. | ✅ |
@@ -838,11 +844,18 @@ sistema avisa y ofrece **ajustar el carrito automáticamente**.
 Se cobra en un solo pago. Cada tienda recibe su correo, ve solo sus productos y actualiza el estado de lo
 suyo de forma independiente.
 
+**¿El usuario puede editar su cuenta?**
+Sí. En el menú del usuario → **Mi cuenta** (`cuenta.html`) puede cambiar su nombre y su celular, y
+cambiar la contraseña. Para cambiar la contraseña debe escribir la **actual**, la nueva (mínimo 8
+caracteres) y repetirla. El servidor verifica la actual con `password_verify`, guarda la nueva cifrada
+con `password_hash` y **renueva la sesión**. El correo no se puede cambiar porque es el usuario para
+iniciar sesión. Funciona igual para compradores y vendedores.
+
 **¿Es responsive?**
 Sí. Usa CSS Grid, Flexbox y `@media queries`; se probó en pantallas de computador y de celular (390 px).
 
 **¿Cómo lo probaron?**
-Con una prueba automática de la API de 42 verificaciones (`tests/prueba-api.php`), pruebas en navegador
+Con una prueba automática de la API de 50 verificaciones (`tests/prueba-api.php`), pruebas en navegador
 real en computador y celular, y pruebas de compatibilidad con Apache, PHP 8.2 y 8.3, MySQL y MariaDB, y
 envío SMTP. Ver sección 14.
 

@@ -7,6 +7,8 @@
  *   POST auth.php?accion=login         -> iniciar sesión
  *   POST auth.php?accion=logout        -> cerrar sesión
  *   POST auth.php?accion=ser-vendedor  -> un comprador abre su tienda
+ *   POST auth.php?accion=actualizar-perfil -> cambiar nombre y celular
+ *   POST auth.php?accion=cambiar-password  -> cambiar la contraseña (pide la actual)
  */
 
 declare(strict_types=1);
@@ -127,6 +129,60 @@ switch (accion()) {
 
         iniciar_sesion_usuario((int) $usuario['id']);
         responder(['usuario' => usuario_publico(usuario_actual(recargar: true)), 'csrf' => token_csrf()], 201);
+
+    case 'actualizar-perfil':
+        exigir_metodo('POST');
+        $usuario = requerir_usuario();
+        $datos = entrada();
+        $v = new Validador($datos);
+
+        $nombre = $v->texto('nombre', 'El nombre', 3, 120);
+        // El celular es opcional: si se deja vacío se borra
+        $telefono = trim((string) ($datos['telefono'] ?? '')) === '' ? null : $v->telefono('telefono', 'El celular');
+
+        $v->verificar();
+
+        consulta('UPDATE usuarios SET nombre = ?, telefono = ? WHERE id = ?', [$nombre, $telefono, $usuario['id']]);
+
+        responder(['usuario' => usuario_publico(usuario_actual(recargar: true)), 'csrf' => token_csrf()]);
+
+    case 'cambiar-password':
+        exigir_metodo('POST');
+        $usuario = requerir_usuario();
+        $datos = entrada();
+        $v = new Validador($datos);
+
+        $actual = (string) ($datos['actual'] ?? '');
+        $nueva = (string) ($datos['nueva'] ?? '');
+        $confirmar = (string) ($datos['confirmar'] ?? '');
+
+        $hash = (string) consulta('SELECT password_hash FROM usuarios WHERE id = ?', [$usuario['id']])->fetchColumn();
+
+        if ($actual === '') {
+            $v->agregarError('actual', 'Escribe tu contraseña actual.');
+        } elseif (!password_verify($actual, $hash)) {
+            $v->agregarError('actual', 'La contraseña actual no es correcta.');
+        }
+
+        if (strlen($nueva) < 8) {
+            $v->agregarError('nueva', 'La nueva contraseña debe tener al menos 8 caracteres.');
+        } elseif (strlen($nueva) > 72) {
+            $v->agregarError('nueva', 'La nueva contraseña no puede superar 72 caracteres.');
+        } elseif ($nueva === $actual) {
+            $v->agregarError('nueva', 'La nueva contraseña debe ser diferente a la actual.');
+        }
+
+        if ($confirmar !== $nueva) {
+            $v->agregarError('confirmar', 'Las contraseñas no coinciden.');
+        }
+
+        $v->verificar();
+
+        consulta('UPDATE usuarios SET password_hash = ? WHERE id = ?', [password_hash($nueva, PASSWORD_DEFAULT), $usuario['id']]);
+
+        // Sesión y token nuevos después de cambiar la contraseña
+        iniciar_sesion_usuario((int) $usuario['id']);
+        responder(['usuario' => usuario_publico(usuario_actual(recargar: true)), 'csrf' => token_csrf()]);
 
     default:
         throw new ErrorApi('Acción no encontrada.', 404);

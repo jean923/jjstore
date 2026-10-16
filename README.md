@@ -5,7 +5,7 @@ Tiene dos roles:
 
 | Rol | Qué puede hacer |
 |---|---|
-| **Comprador** | Ver el catálogo, filtrar y buscar, ver tallas y colores disponibles, armar el carrito, pagar (simulado), recibir el correo de confirmación y seguir el estado de sus pedidos. |
+| **Comprador** | Ver el catálogo, filtrar y buscar, ver tallas y colores disponibles, armar el carrito, pagar (simulado), recibir el correo de confirmación, seguir el estado de sus pedidos y editar su cuenta (nombre, celular y contraseña). |
 | **Vendedor** | Tener su propia tienda, publicar/editar/ocultar/eliminar productos con foto, precio e inventario por talla y color, ver sus ventas, cambiar el estado del envío (el comprador recibe un correo) y ver un resumen con métricas. |
 
 > El pago es **100 % simulado**: no se conecta a ningún banco ni se cobra dinero.
@@ -126,6 +126,7 @@ Para recibir la confirmación, regístrate con tu correo real (las cuentas demo 
 5. **Vendedor:** entra con `barrionorte@jjstore.test`. En *Ventas* aparece el pedido nuevo. Márcalo como *Enviado*: el comprador recibe el correo y lo ve en *Mis pedidos*.
 6. **Productos:** crea uno con foto, tallas, colores y stock por combinación; ocúltalo o edítalo.
 7. **Registro:** crea una cuenta nueva eligiendo *Quiero vender*, o desde una cuenta de comprador usa *Vender en JJ STORE*.
+8. **Mi cuenta:** en el menú del usuario cambia el nombre o el celular, y cambia la contraseña (pide la actual).
 
 ---
 
@@ -140,11 +141,12 @@ JJSTORE/
 │   ├── checkout.html       envío y pago simulado
 │   ├── pedido.html         confirmación / detalle de un pedido
 │   ├── mis-pedidos.html    historial del comprador
+│   ├── cuenta.html         mi cuenta (nombre, celular, contraseña)
 │   ├── vendedor.html       panel de vendedor
 │   ├── css/                style.css (tienda), login.css, panel.css
 │   ├── js/                 api.js (compartido) + un archivo por página
 │   ├── api/                endpoints PHP que responden JSON
-│   │   ├── auth.php        sesión, registro, login, logout, abrir tienda
+│   │   ├── auth.php        sesión, registro, login, logout, abrir tienda, mi cuenta
 │   │   ├── catalogo.php    categorías y productos
 │   │   ├── pedidos.php     cotizar, comprar, mis pedidos, ver correo
 │   │   └── vendedor.php    resumen, productos, ventas, tienda
@@ -167,7 +169,7 @@ JJSTORE/
 │   ├── jjstore.sql         estructura + datos (importar este)
 │   ├── schema.sql          solo la estructura
 │   └── datos-demo.sql      solo los datos de prueba
-├── tests/prueba-api.php    prueba automática de la API (42 verificaciones)
+├── tests/prueba-api.php    prueba automática de la API (50 verificaciones)
 ├── docs/                   guía para la exposición
 ├── vendor/                 librerías externas (PHPMailer)
 ├── storage/logs/           registro de errores de PHP
@@ -282,6 +284,8 @@ Todas las respuestas tienen la forma `{ "ok": true, "datos": … }` o `{ "ok": f
 | POST | `api/auth.php?accion=login` | Iniciar sesión | Público |
 | POST | `api/auth.php?accion=logout` | Cerrar sesión | Público |
 | POST | `api/auth.php?accion=ser-vendedor` | Abrir una tienda | Usuario |
+| POST | `api/auth.php?accion=actualizar-perfil` | Cambiar nombre y celular | Usuario |
+| POST | `api/auth.php?accion=cambiar-password` | Cambiar la contraseña (pide la actual) | Usuario |
 | GET | `api/catalogo.php?accion=categorias` | Categorías | Público |
 | GET | `api/catalogo.php?accion=productos&categoria=&q=` | Productos con variantes | Público |
 | POST | `api/pedidos.php?accion=cotizar` | Precios y stock actuales del carrito | Público |

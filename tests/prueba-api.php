@@ -4,6 +4,7 @@
  *
  * Recorre los flujos principales como lo haría un usuario y verifica cada respuesta:
  * comprador (sesión, CSRF, carrito, pago rechazado/aprobado, stock, correo, pedidos),
+ * mi cuenta (editar nombre y celular, cambiar contraseña),
  * seguridad (pedidos ajenos, permisos de vendedor, archivos falsos) y vendedor
  * (resumen, ventas, estados, productos con imagen, tienda).
  *
@@ -129,6 +130,29 @@ verificar('registro con correo repetido -> 422', $s === 422 && isset($j['errores
 verificar('IDOR: pedido ajeno -> 404', $s === 404, $j);
 [$s, $j] = $otro->pedir('POST', 'auth.php?accion=ser-vendedor', ['tienda_nombre' => 'Tienda Prueba ' . time(), 'tienda_ciudad' => 'Cali']);
 verificar('comprador abre su tienda', $s === 201 && $j['datos']['usuario']['rol'] === 'vendedor', $j);
+
+echo "== Mi cuenta ==\n";
+$anonimo = new Cliente($base);
+$anonimo->pedir('GET', 'auth.php?accion=sesion');
+[$s, $j] = $anonimo->pedir('POST', 'auth.php?accion=actualizar-perfil', ['nombre' => 'Nadie']);
+verificar('editar perfil sin sesión -> 401', $s === 401, $j);
+[$s, $j] = $otro->pedir('POST', 'auth.php?accion=actualizar-perfil', ['nombre' => 'A', 'telefono' => 'abc']);
+verificar('editar perfil con datos inválidos -> 422 (nombre y celular)', $s === 422 && isset($j['errores']['nombre'], $j['errores']['telefono']), $j);
+[$s, $j] = $otro->pedir('POST', 'auth.php?accion=actualizar-perfil', ['nombre' => 'Persona Editada', 'telefono' => '300 123 4567']);
+verificar('editar nombre y celular', $s === 200 && $j['datos']['usuario']['nombre'] === 'Persona Editada' && $j['datos']['usuario']['telefono'] === '300 123 4567', $j);
+[$s, $j] = $otro->pedir('GET', 'auth.php?accion=sesion');
+verificar('la sesión ya trae los datos nuevos', $j['datos']['usuario']['nombre'] === 'Persona Editada', $j);
+[$s, $j] = $otro->pedir('POST', 'auth.php?accion=cambiar-password', ['actual' => 'equivocada', 'nueva' => 'NuevaClave9', 'confirmar' => 'NuevaClave9']);
+verificar('cambiar contraseña con la actual incorrecta -> 422', $s === 422 && isset($j['errores']['actual']), $j);
+[$s, $j] = $otro->pedir('POST', 'auth.php?accion=cambiar-password', ['actual' => 'clave123', 'nueva' => 'corta', 'confirmar' => 'otra']);
+verificar('nueva contraseña corta y sin coincidir -> 422', $s === 422 && isset($j['errores']['nueva'], $j['errores']['confirmar']), $j);
+[$s, $j] = $otro->pedir('POST', 'auth.php?accion=cambiar-password', ['actual' => 'clave123', 'nueva' => 'NuevaClave9', 'confirmar' => 'NuevaClave9']);
+verificar('cambiar contraseña', $s === 200, $j);
+$otro->pedir('POST', 'auth.php?accion=logout');
+[$s, $j] = $otro->pedir('POST', 'auth.php?accion=login', ['email' => $email, 'password' => 'clave123']);
+verificar('la contraseña anterior ya no sirve -> 401', $s === 401, $j);
+[$s, $j] = $otro->pedir('POST', 'auth.php?accion=login', ['email' => $email, 'password' => 'NuevaClave9']);
+verificar('entra con la contraseña nueva', $s === 200 && $j['datos']['usuario']['nombre'] === 'Persona Editada', $j);
 
 echo "== Vendedor ==\n";
 $v = new Cliente($base);

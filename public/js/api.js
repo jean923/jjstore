@@ -361,6 +361,7 @@ const JJ = (() => {
                     </p>
                     <a href="index.html">Ir a la tienda</a>
                     <a href="mis-pedidos.html">Mis pedidos</a>
+                    <a href="cuenta.html">Mi cuenta</a>
                     ${enlaceVender}
                     <button type="button" data-accion="salir">Cerrar sesión</button>
                 </div>

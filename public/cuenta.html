@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi cuenta | JJ STORE</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/panel.css">
+
+    <script src="js/api.js" defer></script>
+    <script src="js/cuenta.js" defer></script>
+</head>
+<body>
+
+    <header class="navbar navbar-simple">
+        <a href="index.html" class="logo" aria-label="JJ STORE, volver a la tienda">
+            JJ<span>STORE.</span>
+            <small>STREETWEAR</small>
+        </a>
+
+        <div class="acciones-usuario">
+            <a href="index.html" class="enlace-volver">← Tienda</a>
+            <div class="zona-sesion" id="zonaSesion"></div>
+        </div>
+    </header>
+
+    <main class="pagina">
+        <div class="pagina-encabezado">
+            <div>
+                <p class="eyebrow">TU CUENTA</p>
+                <h1>MI CUENTA<span>.</span></h1>
+            </div>
+            <p class="texto-suave" id="tipoCuenta"></p>
+        </div>
+
+        <p class="cargando-pagina" id="cargando">Cargando tu cuenta...</p>
+
+        <div class="cuenta-grid" id="cuenta" hidden>
+
+            <!-- ============ DATOS PERSONALES ============ -->
+            <form class="tarjeta" id="formPerfil" novalidate>
+                <h2 class="tarjeta-titulo"><span class="numero">01</span> Datos personales</h2>
+
+                <div class="form-grid">
+                    <div class="campo completo" data-campo>
+                        <label for="perfilNombre">Nombre completo</label>
+                        <input id="perfilNombre" name="nombre" maxlength="120" autocomplete="name" required>
+                    </div>
+
+                    <div class="campo completo">
+                        <label for="perfilEmail">Correo</label>
+                        <input id="perfilEmail" type="email" readonly>
+                        <small class="ayuda">Es tu usuario para iniciar sesión, por eso no se puede cambiar.</small>
+                    </div>
+
+                    <div class="campo completo" data-campo>
+                        <label for="perfilTelefono">Celular <small>(opcional)</small></label>
+                        <input id="perfilTelefono" name="telefono" type="tel" maxlength="30"
+                               autocomplete="tel" placeholder="Ej: 3001234567">
+                        <small class="ayuda">Se usa para llenar tus datos de envío cuando compras.</small>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn boton-formulario">GUARDAR CAMBIOS</button>
+            </form>
+
+            <!-- ============ CONTRASEÑA ============ -->
+            <form class="tarjeta" id="formPassword" novalidate>
+                <h2 class="tarjeta-titulo"><span class="numero">02</span> Cambiar contraseña</h2>
+
+                <div class="form-grid">
+                    <div class="campo completo" data-campo>
+                        <label for="passActual">Contraseña actual</label>
+                        <input id="passActual" name="actual" type="password"
+                               autocomplete="current-password" required>
+                    </div>
+
+                    <div class="campo completo" data-campo>
+                        <label for="passNueva">Nueva contraseña</label>
+                        <input id="passNueva" name="nueva" type="password" minlength="8" maxlength="72"
+                               autocomplete="new-password" placeholder="Mínimo 8 caracteres" required>
+                    </div>
+
+                    <div class="campo completo" data-campo>
+                        <label for="passConfirmar">Repite la nueva contraseña</label>
+                        <input id="passConfirmar" name="confirmar" type="password" maxlength="72"
+                               autocomplete="new-password" required>
+                    </div>
+
+                    <div class="campo completo">
+                        <label class="interruptor">
+                            <input type="checkbox" id="verPasswords">
+                            <span class="pista"></span>
+                            <span>Mostrar contraseñas</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn boton-formulario">CAMBIAR CONTRASEÑA</button>
+            </form>
+
+        </div>
+    </main>
+
+</body>
+</html>
