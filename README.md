@@ -29,7 +29,7 @@ diseño y el backend, y trae las preguntas que suele hacer el jurado con sus res
 ## Instalación
 
 ### Requisitos
-- XAMPP, WAMP o Laragon con **PHP 8.0 o superior** (recomendado 8.2) y MySQL/MariaDB.
+- XAMPP, WAMP o Laragon con **PHP 8.0 o superior** (recomendado 8.2) y MySQL/MariaDB. Con PHP 7 no funciona: hay que instalar un XAMPP más reciente.
 - No hace falta Composer: la librería de correo ya viene en `vendor/`.
 
 ### 1. Base de datos

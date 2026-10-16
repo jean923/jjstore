@@ -73,7 +73,7 @@ También se corrigieron errores del diseño original:
 | **Tipo de aplicación** | Aplicación web, arquitectura **cliente-servidor** en 3 capas. |
 | **Lenguaje del frontend** (lo que ve el usuario) | **HTML5** (estructura), **CSS3** (diseño) y **JavaScript** moderno (ES2020+), **sin frameworks**. |
 | **Lenguaje del backend** (servidor) | **PHP 8.2** (funciona desde PHP 8.0), **sin framework**. |
-| **Base de datos** | **MySQL 8** (compatible con **MariaDB 10.4+**, la que trae XAMPP). Motor **InnoDB**, codificación **utf8mb4** (soporta tildes, ñ y emojis). |
+| **Base de datos** | **MySQL 8** o **MariaDB 10.4+** (la que trae XAMPP). Probado en MySQL 8.4 y MariaDB 11.4; con la MariaDB 10.4 de XAMPP no se probó directamente, pero solo usa funciones que MariaDB tiene desde la versión 10.2. Motor **InnoDB**, codificación **utf8mb4** (soporta tildes, ñ y emojis). |
 | **Lenguaje de base de datos** | **SQL**. |
 | **Servidor web** | **Apache 2.4** (incluido en WAMP y XAMPP) o el servidor integrado de PHP. |
 | **Comunicación frontend ↔ backend** | **API** con peticiones HTTP que responden en formato **JSON**. |
@@ -192,7 +192,7 @@ Se trabajó de forma **incremental**, una capa a la vez, probando cada una antes
 4. **Pruebas automáticas de la API.**
 5. **Frontend**: conexión de la tienda a la API, login/registro, checkout, pedidos y panel de vendedor.
 6. **Pruebas en navegador** (computador y celular) y corrección de detalles.
-7. **Pruebas de compatibilidad** (Apache de WAMP con PHP 8.3, MariaDB de XAMPP, envío SMTP).
+7. **Pruebas de compatibilidad** (Apache de WAMP con PHP 8.3, PHP 8.0 a 8.5, MySQL 8.4, MariaDB 11.4, envío SMTP).
 8. **Documentación.**
 
 ---
@@ -679,7 +679,7 @@ const ENVIO_GRATIS_DESDE = 250000;
 |---|---|---|
 | **Prueba automática de la API** (`tests/prueba-api.php`, 50 verificaciones) | Sesión y token CSRF, login correcto e incorrecto, permisos por rol, cálculo de precios y envío, falta de stock, tarjeta rechazada y vencida, compra aprobada, descuento de stock, correo, que un usuario no vea pedidos ajenos, registro, abrir tienda, editar nombre y celular, cambiar contraseña (con la actual incorrecta, con la nueva muy corta, y que después solo sirva la nueva), resumen del vendedor, cambios de estado válidos e inválidos, devolución de stock al cancelar, crear/editar/ocultar/eliminar productos, rechazo de un archivo falso como imagen. | ✅ 50/50 |
 | **Pruebas en navegador real** (Chrome automatizado) | Recorrido completo del comprador y del vendedor en computador y celular, sin errores en la consola. | ✅ |
-| **Compatibilidad** | Apache de WAMP con PHP 8.3, servidor integrado de PHP 8.0, 8.2 y 8.5, MySQL 8.4 y MariaDB 11.4. | ✅ |
+| **Compatibilidad** | Apache de WAMP con PHP 8.3, servidor integrado de PHP 8.0, 8.2 y 8.5, MySQL 8.4 y MariaDB 11.4. No se probó con PHP 7 (no funciona: necesita PHP 8.0 o superior) ni directamente con la MariaDB 10.4 de XAMPP (la base solo usa funciones disponibles desde MariaDB 10.2; si algo fallara, `diagnostico.php` lo muestra). | ✅ |
 | **Errores de instalación** | MySQL apagado, contraseña equivocada, base sin importar o vacía, y sitio abierto sin PHP (como Live Server): en cada caso la página explica qué hacer. | ✅ |
 | **Envío de correo por SMTP** | Se entregaron los correos de compra, venta y cambio de estado a un servidor SMTP de prueba. | ✅ |
 | **Seguridad de carpetas** | `.env`, `app/`, `database/`, `vendor/` responden 403 (prohibido) desde el navegador. | ✅ |
@@ -870,7 +870,7 @@ Sí. Usa CSS Grid, Flexbox y `@media queries`; se probó en pantallas de computa
 
 **¿Cómo lo probaron?**
 Con una prueba automática de la API de 50 verificaciones (`tests/prueba-api.php`), pruebas en navegador
-real en computador y celular, y pruebas de compatibilidad con Apache, PHP 8.2 y 8.3, MySQL y MariaDB, y
+real en computador y celular, y pruebas de compatibilidad con Apache, PHP 8.0 a 8.5, MySQL y MariaDB, y
 envío SMTP. Ver sección 14.
 
 **¿Cómo lo publicarían en internet?**
