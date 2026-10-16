@@ -14,7 +14,7 @@ final class Validador
 {
     private array $errores = [];
 
-    public function __construct(private readonly array $datos)
+    public function __construct(private array $datos)
     {
     }
 

@@ -72,8 +72,8 @@ También se corrigieron errores del diseño original:
 |---|---|
 | **Tipo de aplicación** | Aplicación web, arquitectura **cliente-servidor** en 3 capas. |
 | **Lenguaje del frontend** (lo que ve el usuario) | **HTML5** (estructura), **CSS3** (diseño) y **JavaScript** moderno (ES2020+), **sin frameworks**. |
-| **Lenguaje del backend** (servidor) | **PHP 8.2** (funciona desde PHP 8.1), **sin framework**. |
-| **Base de datos** | **MySQL 8** (compatible con **MariaDB 10.5+**, la que trae XAMPP). Motor **InnoDB**, codificación **utf8mb4** (soporta tildes, ñ y emojis). |
+| **Lenguaje del backend** (servidor) | **PHP 8.2** (funciona desde PHP 8.0), **sin framework**. |
+| **Base de datos** | **MySQL 8** (compatible con **MariaDB 10.4+**, la que trae XAMPP). Motor **InnoDB**, codificación **utf8mb4** (soporta tildes, ñ y emojis). |
 | **Lenguaje de base de datos** | **SQL**. |
 | **Servidor web** | **Apache 2.4** (incluido en WAMP y XAMPP) o el servidor integrado de PHP. |
 | **Comunicación frontend ↔ backend** | **API** con peticiones HTTP que responden en formato **JSON**. |
@@ -211,6 +211,7 @@ JJSTORE/
 │   ├── pedido.html          Confirmación / detalle de un pedido
 │   ├── mis-pedidos.html     Historial del comprador
 │   ├── cuenta.html          Mi cuenta: editar nombre, celular y contraseña
+│   ├── diagnostico.php      Revisa si al computador le falta algo para correr el proyecto
 │   ├── vendedor.html        Panel de vendedor
 │   ├── css/                 Diseño
 │   │   ├── style.css        Tienda (colores principales, encabezado, tarjetas, carrito)
@@ -268,7 +269,7 @@ JJSTORE/
 
 ### Opción recomendada: XAMPP (Windows, Mac o Linux)
 
-**Paso 1 · Instalar XAMPP.** Descárgalo de <https://www.apachefriends.org> con **PHP 8.1 o superior**
+**Paso 1 · Instalar XAMPP.** Descárgalo de <https://www.apachefriends.org> con **PHP 8.0 o superior** (recomendado 8.2)
 e instálalo con las opciones por defecto.
 
 **Paso 2 · Descargar el proyecto.**
@@ -289,6 +290,13 @@ en **MySQL**. Los dos deben quedar en verde.
 
 ¡Listo! No hace falta configurar nada más: por defecto el sistema usa el usuario `root` sin
 contraseña, que es lo que traen XAMPP y WAMP.
+
+**Paso 6 · Si algo falla:** abre <http://localhost/JJSTORE/diagnostico.php>. Esa página revisa la
+versión de PHP, las extensiones, la conexión a MySQL, si la base está importada y los permisos de las
+carpetas, y explica cómo arreglar lo que esté en rojo.
+
+> ⚠️ **No lo abras con Live Server de VS Code ni con doble clic en el `.html`.** El sitio necesita
+> PHP: siempre se abre desde `http://localhost/...` con Apache encendido.
 
 ### Con WAMP
 
@@ -329,11 +337,16 @@ Para dejar todo como al principio (por ejemplo, justo antes de exponer), vuelve 
 |---|---|---|
 | Apache no arranca en XAMPP | El puerto 80 está ocupado (Skype, IIS, otro programa). | Cierra ese programa o cambia el puerto de Apache en *Config → httpd.conf* (`Listen 8080`) y entra por `http://localhost:8080/JJSTORE/`. |
 | "No hay conexión con el servidor" o el catálogo no carga | MySQL apagado o base no importada. | Enciende MySQL y vuelve a importar `database/jjstore.sql`. |
-| "Ocurrió un error inesperado" | Credenciales de MySQL distintas (por ejemplo, tu MySQL tiene contraseña). | Copia `.env.example` como `.env` y escribe tu contraseña en `DB_PASS=`. El detalle del error queda en `storage/logs/php-error.log`. |
+| "El servidor no está ejecutando PHP" | Se abrió con Live Server o con doble clic en el archivo. | Abre el sitio desde XAMPP/WAMP: `http://localhost/JJSTORE/`. |
+| "La versión de PHP es muy antigua" | XAMPP con PHP 7. | Instala XAMPP con PHP 8.0 o superior (recomendado 8.2). |
+| "No se pudo conectar a MySQL" | MySQL apagado. | En el panel de XAMPP pulsa **Start** en MySQL. |
+| "La base de datos 'jjstore' no existe" o "le faltan tablas" | No se importó la base, o se importó a medias. | Importa `database/jjstore.sql` en phpMyAdmin. |
+| "MySQL rechazó el usuario o la contraseña" | Tu MySQL tiene contraseña. | Copia `.env.example` como `.env` y escribe tu contraseña en `DB_PASS=`. |
+| "Ocurrió un error inesperado" | Un error del servidor. | Abre `diagnostico.php`; el detalle técnico queda en `storage/logs/php-error.log`. |
 | Error `could not find driver` en el log | La extensión de MySQL para PHP está desactivada. | En `php.ini` quita el `;` de la línea `extension=pdo_mysql` y reinicia Apache. |
 | Al abrir `http://localhost/JJSTORE/` sale una lista de carpetas o error 404 | Apache sin `mod_rewrite` o sin permiso para `.htaccess`. | Entra directamente por `http://localhost/JJSTORE/public/`. |
 | La página se ve pero las fotos de demo no | No hay internet (las fotos de demo vienen de Unsplash). | Conéctate a internet o sube fotos propias desde el panel de vendedor. |
-| Error de sintaxis de PHP | XAMPP con PHP 7. | Instala una versión de XAMPP con PHP 8.1 o superior. |
+| Error de sintaxis de PHP | XAMPP con PHP 7. | Instala una versión de XAMPP con PHP 8.0 o superior. |
 
 ---
 
@@ -666,7 +679,8 @@ const ENVIO_GRATIS_DESDE = 250000;
 |---|---|---|
 | **Prueba automática de la API** (`tests/prueba-api.php`, 50 verificaciones) | Sesión y token CSRF, login correcto e incorrecto, permisos por rol, cálculo de precios y envío, falta de stock, tarjeta rechazada y vencida, compra aprobada, descuento de stock, correo, que un usuario no vea pedidos ajenos, registro, abrir tienda, editar nombre y celular, cambiar contraseña (con la actual incorrecta, con la nueva muy corta, y que después solo sirva la nueva), resumen del vendedor, cambios de estado válidos e inválidos, devolución de stock al cancelar, crear/editar/ocultar/eliminar productos, rechazo de un archivo falso como imagen. | ✅ 50/50 |
 | **Pruebas en navegador real** (Chrome automatizado) | Recorrido completo del comprador y del vendedor en computador y celular, sin errores en la consola. | ✅ |
-| **Compatibilidad** | Apache de WAMP con PHP 8.3, servidor integrado de PHP 8.2, MySQL 8.4 y MariaDB 11.4. | ✅ |
+| **Compatibilidad** | Apache de WAMP con PHP 8.3, servidor integrado de PHP 8.0, 8.2 y 8.5, MySQL 8.4 y MariaDB 11.4. | ✅ |
+| **Errores de instalación** | MySQL apagado, contraseña equivocada, base sin importar o vacía, y sitio abierto sin PHP (como Live Server): en cada caso la página explica qué hacer. | ✅ |
 | **Envío de correo por SMTP** | Se entregaron los correos de compra, venta y cambio de estado a un servidor SMTP de prueba. | ✅ |
 | **Seguridad de carpetas** | `.env`, `app/`, `database/`, `vendor/` responden 403 (prohibido) desde el navegador. | ✅ |
 

@@ -13,20 +13,22 @@ final class ErrorApi extends RuntimeException
 {
     public function __construct(
         string $mensaje,
-        public readonly int $codigoHttp = 400,
-        public readonly array $errores = [],
-        public readonly ?string $tipo = null
+        public int $codigoHttp = 400,
+        public array $errores = [],
+        public ?string $tipo = null
     ) {
         parent::__construct($mensaje);
     }
 }
 
-function responder(mixed $datos = null, int $codigo = 200): never
+// responder(), responder_error() y enviar_json() terminan la ejecución (exit).
+
+function responder(mixed $datos = null, int $codigo = 200): void
 {
     enviar_json(['ok' => true, 'datos' => $datos], $codigo);
 }
 
-function responder_error(string $mensaje, int $codigo = 400, array $errores = [], ?string $tipo = null): never
+function responder_error(string $mensaje, int $codigo = 400, array $errores = [], ?string $tipo = null): void
 {
     $cuerpo = ['ok' => false, 'error' => $mensaje];
 
@@ -41,8 +43,13 @@ function responder_error(string $mensaje, int $codigo = 400, array $errores = []
     enviar_json($cuerpo, $codigo);
 }
 
-function enviar_json(array $cuerpo, int $codigo): never
+function enviar_json(array $cuerpo, int $codigo): void
 {
+    // Descarta cualquier aviso que PHP haya impreso antes, para no dañar el JSON
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+
     http_response_code($codigo);
     header('Content-Type: application/json; charset=utf-8');
     header('Cache-Control: no-store');

@@ -19,8 +19,8 @@ diseño y el backend, y trae las preguntas que suele hacer el jurado con sus res
 ## Tecnologías
 
 - **Frontend:** HTML5, CSS3 y JavaScript (sin frameworks).
-- **Backend:** PHP 8.1+ (probado en 8.2 y 8.3) sin framework, con una API JSON.
-- **Base de datos:** MySQL 8 o MariaDB 10.5+ (probado en MySQL 8.4 y MariaDB 11.4), acceso con PDO y sentencias preparadas.
+- **Backend:** PHP 8.0+ (probado en 8.0, 8.2, 8.3 y 8.5) sin framework, con una API JSON.
+- **Base de datos:** MySQL 8 o MariaDB 10.4+ (probado en MySQL 8.4 y MariaDB 11.4), acceso con PDO y sentencias preparadas.
 - **Correo:** [PHPMailer](https://github.com/PHPMailer/PHPMailer) por SMTP (Gmail, Outlook, Mailtrap…) o modo "archivo" sin internet.
 - **Paradigma:** programación estructurada y modular con apoyo de POO (backend), orientada a eventos y asíncrona (frontend); arquitectura cliente-servidor en 3 capas.
 
@@ -29,7 +29,7 @@ diseño y el backend, y trae las preguntas que suele hacer el jurado con sus res
 ## Instalación
 
 ### Requisitos
-- XAMPP, WAMP o Laragon con **PHP 8.1 o superior** y MySQL/MariaDB.
+- XAMPP, WAMP o Laragon con **PHP 8.0 o superior** (recomendado 8.2) y MySQL/MariaDB.
 - No hace falta Composer: la librería de correo ya viene en `vendor/`.
 
 ### 1. Base de datos
@@ -60,6 +60,14 @@ enciende Apache y MySQL, y abre
 php -S localhost:8000 -t public
 ```
 👉 `http://localhost:8000`
+
+> ⚠️ No lo abras con **Live Server** de VS Code ni con doble clic en el `.html`: el sitio necesita
+> PHP, así que siempre se abre desde XAMPP/WAMP o con `php -S`.
+
+### ¿Algo no funciona?
+Abre **`http://localhost/JJSTORE/diagnostico.php`**. Revisa la versión de PHP, las extensiones, la
+conexión a MySQL, si la base está importada y los permisos de carpetas, y dice cómo arreglar cada
+cosa que falte.
 
 ---
 
@@ -142,6 +150,7 @@ JJSTORE/
 │   ├── pedido.html         confirmación / detalle de un pedido
 │   ├── mis-pedidos.html    historial del comprador
 │   ├── cuenta.html         mi cuenta (nombre, celular, contraseña)
+│   ├── diagnostico.php     revisa si al computador le falta algo (PHP, MySQL, base importada)
 │   ├── vendedor.html       panel de vendedor
 │   ├── css/                style.css (tienda), login.css, panel.css
 │   ├── js/                 api.js (compartido) + un archivo por página

@@ -90,7 +90,7 @@ switch (accion()) {
             'mas_vendidos'    => array_map(fn ($f) => [
                 'nombre' => $f['nombre'], 'unidades' => (int) $f['unidades'], 'total' => (float) $f['total'],
             ], $masVendidos),
-            'stock_bajo'      => array_map(fn ($f) => [...$f, 'producto_id' => (int) $f['producto_id'], 'stock' => (int) $f['stock']], $stockBajo),
+            'stock_bajo'      => array_map(fn ($f) => array_merge($f, ['producto_id' => (int) $f['producto_id'], 'stock' => (int) $f['stock']]), $stockBajo),
         ]);
 
     case 'productos':

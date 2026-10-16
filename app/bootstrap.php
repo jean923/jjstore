@@ -8,6 +8,14 @@ declare(strict_types=1);
 
 define('RAIZ', dirname(__DIR__));
 
+// Los errores nunca se muestran al usuario: se guardan en storage/logs.
+// Va antes que todo para que ningún aviso de PHP se mezcle con las respuestas JSON.
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+ini_set('error_log', RAIZ . '/storage/logs/php-error.log');
+error_reporting(E_ALL);
+ob_start();
+
 require RAIZ . '/app/config.php';
 require RAIZ . '/app/BaseDatos.php';
 require RAIZ . '/app/http.php';
@@ -19,12 +27,6 @@ if (is_file(RAIZ . '/vendor/autoload.php')) {
 }
 
 date_default_timezone_set(config('APP_TIMEZONE', 'America/Bogota'));
-
-// Los errores nunca se muestran al usuario: se guardan en storage/logs.
-ini_set('display_errors', '0');
-ini_set('log_errors', '1');
-ini_set('error_log', RAIZ . '/storage/logs/php-error.log');
-error_reporting(E_ALL);
 
 set_error_handler(function (int $nivel, string $mensaje, string $archivo, int $linea): bool {
     if (!(error_reporting() & $nivel)) {
@@ -39,6 +41,11 @@ set_exception_handler(function (Throwable $e): void {
     }
 
     error_log(sprintf("[%s] %s en %s:%d\n%s", get_class($e), $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString()));
+
+    // Problemas de instalación (MySQL apagado, base sin importar...): se explica cómo arreglarlos
+    if ($e instanceof PDOException && ($ayuda = ayuda_error_bd($e)) !== null) {
+        responder_error($ayuda, 503);
+    }
 
     $mensaje = config('APP_DEBUG') === 'true'
         ? $e->getMessage()

@@ -69,13 +69,17 @@ const JJ = (() => {
         try {
             respuesta = await fetch("api/" + ruta, opciones);
         } catch {
-            throw new ErrorApi("No hay conexión con el servidor. Revisa que esté encendido.");
+            throw new ErrorApi(location.protocol === "file:"
+                ? "Abriste el archivo directamente. El sitio debe abrirse desde XAMPP o WAMP, por ejemplo http://localhost/JJSTORE/"
+                : "No hay conexión con el servidor. Revisa que Apache esté encendido.");
         }
 
+        let texto = "";
         let cuerpo = null;
 
         try {
-            cuerpo = await respuesta.json();
+            texto = await respuesta.text();
+            cuerpo = JSON.parse(texto);
         } catch {
             cuerpo = null;
         }
@@ -88,7 +92,7 @@ const JJ = (() => {
 
         if (!respuesta.ok || !cuerpo || !cuerpo.ok) {
             throw new ErrorApi(
-                cuerpo?.error || "Ocurrió un error inesperado. Intenta de nuevo.",
+                cuerpo?.error || explicarRespuesta(respuesta.status, texto),
                 respuesta.status,
                 cuerpo?.errores || {}
             );
@@ -102,6 +106,31 @@ const JJ = (() => {
         }
 
         return resultado;
+    }
+
+    /**
+     * La API no respondió con JSON: casi siempre es un problema de instalación.
+     * Se explica la causa probable y cómo revisarla.
+     */
+    function explicarRespuesta(estado, texto) {
+        const diagnostico = new URL("diagnostico.php", location.href).href;
+
+        if (texto.includes("<?php") || estado === 405) {
+            return "El servidor no está ejecutando PHP (por ejemplo, se abrió con Live Server). " +
+                "Abre el sitio desde XAMPP o WAMP, por ejemplo http://localhost/JJSTORE/";
+        }
+
+        if (/parse error|syntax error/i.test(texto)) {
+            return "La versión de PHP es muy antigua para este proyecto: necesita PHP 8.0 o superior. " +
+                `Instala una versión reciente de XAMPP. Detalle: ${diagnostico}`;
+        }
+
+        if (estado === 404) {
+            return "No se encontró la API (error 404). Revisa que el proyecto esté dentro de htdocs y " +
+                `que entres por http://localhost/NOMBRE-DE-LA-CARPETA/. Detalle: ${diagnostico}`;
+        }
+
+        return `El servidor respondió con un error (código ${estado}). Para ver qué falta abre ${diagnostico}`;
     }
 
     /* ---------- SESIÓN ---------- */
