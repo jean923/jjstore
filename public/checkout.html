@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar compra | JJ STORE</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/panel.css">
+
+    <script src="js/api.js" defer></script>
+    <script src="js/checkout.js" defer></script>
+</head>
+<body>
+
+    <header class="navbar navbar-simple">
+        <a href="index.html" class="logo" aria-label="JJ STORE, volver a la tienda">
+            JJ<span>STORE.</span>
+            <small>STREETWEAR</small>
+        </a>
+
+        <div class="acciones-usuario">
+            <a href="index.html" class="enlace-volver">← Seguir comprando</a>
+            <div class="zona-sesion" id="zonaSesion"></div>
+        </div>
+    </header>
+
+    <main class="pagina">
+
+        <div class="pagina-encabezado">
+            <div>
+                <p class="eyebrow">FINALIZAR COMPRA</p>
+                <h1>CHECKOUT<span>.</span></h1>
+            </div>
+
+            <ol class="pasos-checkout" aria-label="Pasos de la compra">
+                <li class="hecho">CARRITO</li>
+                <li class="actual" aria-current="step">ENVÍO Y PAGO</li>
+                <li>CONFIRMACIÓN</li>
+            </ol>
+        </div>
+
+        <p class="cargando-pagina" id="cargando">Cargando tu carrito...</p>
+
+        <div class="vacio" id="carritoVacio" hidden>
+            <h2>Tu carrito está vacío</h2>
+            <p>Agrega prendas desde la colección para poder finalizar tu compra.</p>
+            <a href="index.html#catalogo" class="btn">IR A LA COLECCIÓN ↗</a>
+        </div>
+
+        <div class="checkout-grid" id="checkout" hidden>
+
+            <form id="formCheckout" novalidate>
+
+                <!-- DATOS DE ENVÍO -->
+                <section class="tarjeta">
+                    <h2 class="tarjeta-titulo"><span class="numero">01</span> Datos de envío</h2>
+
+                    <div class="form-grid">
+                        <div class="campo completo" data-campo>
+                            <label for="envNombre">Nombre de quien recibe</label>
+                            <input id="envNombre" name="nombre" autocomplete="name" required>
+                        </div>
+
+                        <div class="campo" data-campo>
+                            <label for="envEmail">Correo para la confirmación</label>
+                            <input id="envEmail" name="email" type="email" autocomplete="email" required>
+                        </div>
+
+                        <div class="campo" data-campo>
+                            <label for="envTelefono">Celular</label>
+                            <input id="envTelefono" name="telefono" type="tel" inputmode="tel"
+                                   placeholder="300 123 4567" autocomplete="tel" required>
+                        </div>
+
+                        <div class="campo completo" data-campo>
+                            <label for="envDireccion">Dirección</label>
+                            <input id="envDireccion" name="direccion" placeholder="Calle / Carrera, número, apto"
+                                   autocomplete="street-address" required>
+                        </div>
+
+                        <div class="campo" data-campo>
+                            <label for="envCiudad">Ciudad</label>
+                            <input id="envCiudad" name="ciudad" autocomplete="address-level2" required>
+                        </div>
+
+                        <div class="campo" data-campo>
+                            <label for="envDepartamento">Departamento</label>
+                            <select id="envDepartamento" name="departamento" required>
+                                <option value="">Selecciona...</option>
+                            </select>
+                        </div>
+
+                        <div class="campo completo" data-campo>
+                            <label for="envNotas">Indicaciones para la entrega <small>(opcional)</small></label>
+                            <textarea id="envNotas" name="notas" maxlength="300"
+                                      placeholder="Ej: dejar en portería, timbre dañado..."></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MÉTODO DE PAGO -->
+                <section class="tarjeta">
+                    <h2 class="tarjeta-titulo"><span class="numero">02</span> Método de pago</h2>
+
+                    <div class="metodos-pago" role="radiogroup" aria-label="Método de pago" data-campo>
+                        <label class="metodo">
+                            <input type="radio" name="metodo" value="tarjeta" checked>
+                            <span><strong>Tarjeta</strong><small>Crédito o débito</small></span>
+                        </label>
+                        <label class="metodo">
+                            <input type="radio" name="metodo" value="pse">
+                            <span><strong>PSE</strong><small>Débito desde tu banco</small></span>
+                        </label>
+                        <label class="metodo">
+                            <input type="radio" name="metodo" value="contraentrega">
+                            <span><strong>Contra entrega</strong><small>Pagas al recibir</small></span>
+                        </label>
+                    </div>
+
+                    <!-- Tarjeta -->
+                    <div id="panelTarjeta" data-metodo="tarjeta">
+                        <div class="tarjeta-visual" aria-hidden="true">
+                            <span class="marca-tarjeta" id="visualMarca">TARJETA</span>
+                            <span class="numero-tarjeta" id="visualNumero">•••• •••• •••• ••••</span>
+                            <div class="pie-tarjeta">
+                                <span id="visualTitular">NOMBRE DEL TITULAR</span>
+                                <span id="visualVence">MM/AA</span>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="campo completo" data-campo>
+                                <label for="pagoNumero">Número de la tarjeta</label>
+                                <input id="pagoNumero" name="numero" inputmode="numeric" autocomplete="cc-number"
+                                       placeholder="4242 4242 4242 4242" maxlength="23">
+                            </div>
+
+                            <div class="campo completo" data-campo>
+                                <label for="pagoTitular">Nombre como aparece en la tarjeta</label>
+                                <input id="pagoTitular" name="titular" autocomplete="cc-name">
+                            </div>
+
+                            <div class="campo" data-campo>
+                                <label for="pagoVence">Vencimiento</label>
+                                <input id="pagoVence" name="vencimiento" inputmode="numeric" autocomplete="cc-exp"
+                                       placeholder="MM/AA" maxlength="5">
+                            </div>
+
+                            <div class="campo" data-campo>
+                                <label for="pagoCvv">CVV</label>
+                                <input id="pagoCvv" name="cvv" inputmode="numeric" autocomplete="cc-csc"
+                                       placeholder="123" maxlength="4">
+                            </div>
+                        </div>
+
+                        <div class="tarjetas-prueba">
+                            <strong>TARJETAS DE PRUEBA (PAGO SIMULADO)</strong>
+                            Aprobada: <button type="button" data-tarjeta="4242 4242 4242 4242">4242 4242 4242 4242</button><br>
+                            Rechazada: <button type="button" data-tarjeta="4000 0000 0000 0002">4000 0000 0000 0002</button><br>
+                            Usa cualquier fecha futura y cualquier CVV de 3 dígitos.
+                        </div>
+                    </div>
+
+                    <!-- PSE -->
+                    <div id="panelPse" data-metodo="pse" hidden>
+                        <div class="form-grid">
+                            <div class="campo completo" data-campo>
+                                <label for="pagoBanco">Banco</label>
+                                <select id="pagoBanco" name="banco">
+                                    <option value="">Selecciona tu banco...</option>
+                                    <option>Bancolombia</option>
+                                    <option>Davivienda</option>
+                                    <option>Banco de Bogotá</option>
+                                    <option>BBVA Colombia</option>
+                                    <option>Banco de Occidente</option>
+                                    <option>Banco Popular</option>
+                                    <option>Scotiabank Colpatria</option>
+                                    <option>Nequi</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="alerta alerta-info" style="margin-top:16px">
+                            En una tienda real serías redirigido al portal de tu banco.
+                            Aquí la aprobación es inmediata y simulada.
+                        </p>
+                    </div>
+
+                    <!-- Contra entrega -->
+                    <div id="panelContraentrega" data-metodo="contraentrega" hidden>
+                        <p class="alerta alerta-info">
+                            Pagas en efectivo o con datáfono cuando recibas tu pedido.
+                            El vendedor verá el pedido como "pago pendiente".
+                        </p>
+                    </div>
+                </section>
+            </form>
+
+            <!-- RESUMEN -->
+            <aside class="tarjeta resumen" aria-labelledby="tituloResumen">
+                <h2 class="tarjeta-titulo" id="tituloResumen">Tu pedido</h2>
+
+                <div id="problemas"></div>
+                <div class="resumen-items" id="resumenItems"></div>
+
+                <div class="totales">
+                    <div><span>Subtotal</span><span id="resSubtotal">$0</span></div>
+                    <div><span>Envío</span><span id="resEnvio">$0</span></div>
+                    <div class="total-final"><span>Total</span><span id="resTotal">$0</span></div>
+                </div>
+
+                <p class="alerta alerta-error" id="errorPago" hidden></p>
+
+                <button type="submit" form="formCheckout" class="btn btn-bloque" id="pagarBtn" style="margin-top:14px">
+                    PAGAR <span>→</span>
+                </button>
+
+                <p class="nota-segura">
+                    🔒 Pago simulado para el proyecto de grado.<br>
+                    No se realiza ningún cobro y no guardamos los datos de tu tarjeta.
+                </p>
+            </aside>
+        </div>
+    </main>
+
+    <!-- PROCESANDO PAGO -->
+    <div class="procesando" id="procesando" role="alertdialog" aria-live="assertive" hidden>
+        <div>
+            <div class="spinner"></div>
+            <h2 id="procesandoTitulo">Procesando tu pago...</h2>
+            <p>Estamos confirmando la transacción con el banco (simulado).</p>
+        </div>
+    </div>
+
+</body>
+</html>

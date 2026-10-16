@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis pedidos | JJ STORE</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/panel.css">
+
+    <script src="js/api.js" defer></script>
+    <script src="js/mis-pedidos.js" defer></script>
+</head>
+<body>
+
+    <header class="navbar navbar-simple">
+        <a href="index.html" class="logo" aria-label="JJ STORE, volver a la tienda">
+            JJ<span>STORE.</span>
+            <small>STREETWEAR</small>
+        </a>
+
+        <div class="acciones-usuario">
+            <a href="index.html" class="enlace-volver">← Tienda</a>
+            <div class="zona-sesion" id="zonaSesion"></div>
+        </div>
+    </header>
+
+    <main class="pagina">
+        <div class="pagina-encabezado">
+            <div>
+                <p class="eyebrow">TU CUENTA</p>
+                <h1>MIS PEDIDOS<span>.</span></h1>
+            </div>
+            <p class="texto-suave" id="resumenPedidos"></p>
+        </div>
+
+        <p class="cargando-pagina" id="cargando">Cargando tus pedidos...</p>
+        <div id="listaPedidos"></div>
+    </main>
+
+</body>
+</html>

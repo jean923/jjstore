@@ -571,3 +571,175 @@ button, a {
 .campo input[type="text"] {
     padding-right: 100px;
 }
+
+
+/* ======================================
+   REGISTRO CON ROLES, ERRORES Y AYUDAS
+====================================== */
+
+.mensaje.error {
+    color: var(--error);
+}
+
+.ayuda,
+#textoPassword,
+#estadoCoincidencia {
+    display: block;
+    margin-top: 7px;
+    color: var(--gris);
+    font-size: 10px;
+}
+
+#estadoCoincidencia.correcto { color: #8fd19e; }
+#estadoCoincidencia.incorrecto { color: var(--error); }
+
+.fuerza-password {
+    height: 3px;
+    margin-top: 9px;
+    background: #262626;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.fuerza-password span {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: var(--cenizo);
+    transition: width .3s ease;
+}
+
+/* Errores que devuelve el servidor por campo */
+.con-error input,
+.con-error .opcion-rol span {
+    border-color: var(--error) !important;
+}
+
+.error-campo {
+    display: block;
+    margin-top: 6px;
+    color: var(--error);
+    font-size: 10px;
+}
+
+/* Selector comprador / vendedor */
+.selector-rol {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 18px;
+    border: none;
+}
+
+.selector-rol legend {
+    margin-bottom: 9px;
+    color: #dedbd5;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.opcion-rol {
+    position: relative;
+    cursor: pointer;
+}
+
+.opcion-rol input {
+    position: absolute;
+    opacity: 0;
+}
+
+.opcion-rol span {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 13px;
+    background: #101010;
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    transition: border-color .25s, background .25s;
+}
+
+.opcion-rol strong {
+    font-size: 12px;
+}
+
+.opcion-rol small {
+    color: var(--gris);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.opcion-rol:hover span {
+    border-color: #555;
+}
+
+.opcion-rol input:checked + span {
+    background: #1d1c1a;
+    border-color: var(--cenizo);
+    box-shadow: inset 0 0 0 1px var(--cenizo);
+}
+
+.opcion-rol input:focus-visible + span {
+    outline: 2px solid var(--cenizo);
+    outline-offset: 3px;
+}
+
+.datos-tienda {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 0 12px;
+}
+
+.datos-tienda[hidden] {
+    display: none;
+}
+
+/* Cuentas de prueba en el login */
+.cuentas-demo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    padding: 12px;
+    background: #101010;
+    border: 1px dashed #3a3a3a;
+    border-radius: 6px;
+}
+
+.cuentas-demo p {
+    flex-basis: 100%;
+    color: var(--gris);
+    font-size: 10px;
+    letter-spacing: .5px;
+}
+
+.cuentas-demo button {
+    padding: 7px 12px;
+    background: transparent;
+    color: var(--cenizo);
+    border: 1px solid #444;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background .25s, color .25s;
+}
+
+.cuentas-demo button:hover {
+    background: var(--cenizo);
+    color: #111;
+}
+
+.boton-principal:disabled {
+    opacity: .6;
+    cursor: wait;
+    transform: none;
+}
+
+@media (max-width: 480px) {
+    .selector-rol,
+    .datos-tienda {
+        grid-template-columns: 1fr;
+    }
+}

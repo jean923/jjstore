@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear cuenta | JJ STORE</title>
+    <link rel="stylesheet" href="css/login.css">
+    <script src="js/api.js" defer></script>
+    <script src="js/registro.js" defer></script>
+</head>
+<body>
+
+    <main class="pagina-login">
+        <a href="index.html" class="volver">← Volver a la tienda</a>
+
+        <section class="contenedor-login register-contenedor">
+
+            <div class="lado-visual">
+                <span class="marca">JJ<span>STORE.</span></span>
+
+                <div class="visual-texto">
+                    <p class="etiqueta">STREETWEAR / URBAN CULTURE</p>
+                    <h1>FORMA<br>PARTE.</h1>
+                    <p>Crea tu cuenta para comprar o abre tu propia tienda y vende tus prendas.</p>
+                </div>
+
+                <span class="visual-pie">MEDELLÍN, COLOMBIA · JJ STORE</span>
+            </div>
+
+            <div class="lado-formulario register-formulario">
+
+                <div class="encabezado-formulario">
+                    <span class="marca movil">JJ<span>STORE.</span></span>
+                    <p class="etiqueta">ÚNETE A NUESTRA COMUNIDAD</p>
+                    <h2>Crear cuenta</h2>
+                    <p class="subtitulo">Regístrate y encuentra tu propio estilo.</p>
+                </div>
+
+                <form id="formRegistro" novalidate>
+
+                    <fieldset class="selector-rol" data-campo>
+                        <legend>¿Qué quieres hacer en JJ STORE?</legend>
+
+                        <label class="opcion-rol">
+                            <input type="radio" name="rol" value="comprador" checked>
+                            <span>
+                                <strong>Quiero comprar</strong>
+                                <small>Compra prendas de todas las tiendas.</small>
+                            </span>
+                        </label>
+
+                        <label class="opcion-rol">
+                            <input type="radio" name="rol" value="vendedor">
+                            <span>
+                                <strong>Quiero vender</strong>
+                                <small>Abre tu tienda y publica productos.</small>
+                            </span>
+                        </label>
+                    </fieldset>
+
+                    <div class="campo" data-campo>
+                        <label for="nombreRegistro">Nombre completo</label>
+                        <input type="text" id="nombreRegistro" name="nombre"
+                               placeholder="Tu nombre completo"
+                               autocomplete="name" required>
+                    </div>
+
+                    <div class="campo" data-campo>
+                        <label for="correoRegistro">Correo electrónico</label>
+                        <input type="email" id="correoRegistro" name="email"
+                               placeholder="nombre@correo.com"
+                               autocomplete="email" required>
+                        <small class="ayuda">Aquí te llegará la confirmación de tus compras.</small>
+                    </div>
+
+                    <div class="datos-tienda" id="datosTienda" hidden>
+                        <div class="campo" data-campo>
+                            <label for="tiendaNombre">Nombre de tu tienda</label>
+                            <input type="text" id="tiendaNombre" name="tienda_nombre"
+                                   placeholder="Ej: Barrio Norte Studio">
+                        </div>
+
+                        <div class="campo" data-campo>
+                            <label for="tiendaCiudad">Ciudad</label>
+                            <input type="text" id="tiendaCiudad" name="tienda_ciudad"
+                                   placeholder="Ej: Medellín" autocomplete="address-level2">
+                        </div>
+                    </div>
+
+                    <div class="campo" data-campo>
+                        <label for="passwordRegistro">Contraseña</label>
+
+                        <div class="campo-password">
+                            <input type="password" id="passwordRegistro" name="password"
+                                   placeholder="Mínimo 8 caracteres"
+                                   minlength="8"
+                                   autocomplete="new-password" required>
+                            <button type="button" class="ver-password" data-objetivo="passwordRegistro">
+                                <span class="icono-ojo">👁️</span>
+                                <span class="texto-ojo">Mostrar</span>
+                            </button>
+                        </div>
+
+                        <div class="fuerza-password">
+                            <span id="barraPassword"></span>
+                        </div>
+                        <small id="textoPassword">Usa al menos 8 caracteres.</small>
+                    </div>
+
+                    <div class="campo" data-campo>
+                        <label for="confirmarPassword">Confirmar contraseña</label>
+
+                        <div class="campo-password">
+                            <input type="password" id="confirmarPassword"
+                                   placeholder="Repite tu contraseña"
+                                   minlength="8"
+                                   autocomplete="new-password" required>
+                            <button type="button" class="ver-password" data-objetivo="confirmarPassword">
+                                <span class="icono-ojo">👁️</span>
+                                <span class="texto-ojo">Mostrar</span>
+                            </button>
+                        </div>
+
+                        <small id="estadoCoincidencia"></small>
+                    </div>
+
+                    <label class="recordar terminos">
+                        <input type="checkbox" id="aceptarTerminos" required>
+                        <span>Acepto los términos y condiciones.</span>
+                    </label>
+
+                    <button type="submit" class="boton-principal">
+                        CREAR CUENTA <span>→</span>
+                    </button>
+
+                    <p class="mensaje" id="mensajeRegistro" aria-live="polite"></p>
+
+                    <p class="cambiar-formulario">
+                        ¿Ya tienes una cuenta?
+                        <a href="login.html" id="irLogin">Inicia sesión</a>
+                    </p>
+
+                </form>
+
+                <p class="pie-formulario">
+                    © <span id="anio"></span> JJ STORE. TODOS LOS DERECHOS RESERVADOS.
+                </p>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+# Las imágenes subidas por los vendedores nunca se ejecutan como código.
+<FilesMatch "\.(php\d?|phtml|phar|pl|py|cgi|sh)$">
+    Require all denied
+</FilesMatch>
+Options -Indexes

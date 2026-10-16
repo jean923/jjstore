@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso | JJ STORE</title>
+    <link rel="stylesheet" href="css/login.css">
+    <script src="js/api.js" defer></script>
+    <script src="js/login.js" defer></script>
+</head>
+<body>
+
+    <main class="pagina-login">
+
+        <a href="index.html" class="volver">← Volver a la tienda</a>
+
+        <section class="contenedor-login" id="contenedorLogin">
+
+            <div class="lado-visual">
+                <span class="marca">JJ<span>STORE.</span></span>
+
+                <div class="visual-texto">
+                    <p class="etiqueta">STREETWEAR / URBAN CULTURE</p>
+                    <h1>VISTE<br>DIFERENTE.</h1>
+                    <p>Tu estilo habla por ti. Bienvenido a una nueva forma de vestir.</p>
+                </div>
+
+                <span class="visual-pie">MEDELLÍN, COLOMBIA · EST. JJ</span>
+            </div>
+
+            <div class="lado-formulario">
+
+                <div class="encabezado-formulario">
+                    <span class="marca movil">JJ<span>STORE.</span></span>
+                    <p class="etiqueta">BIENVENIDO A JJ STORE</p>
+                    <h2>Iniciar sesión</h2>
+                    <p class="subtitulo" id="subtituloFormulario">
+                        Ingresa tus datos para continuar.
+                    </p>
+                </div>
+
+                <form id="formLogin" class="formulario activo" novalidate>
+
+                    <div class="campo" data-campo>
+                        <label for="correoLogin">Correo electrónico</label>
+                        <input type="email" id="correoLogin" name="email"
+                               placeholder="nombre@correo.com"
+                               autocomplete="email" required>
+                    </div>
+
+                    <div class="campo" data-campo>
+                        <label for="passwordLogin">Contraseña</label>
+                        <div class="campo-password">
+                            <input type="password" id="passwordLogin" name="password"
+                                   placeholder="Ingresa tu contraseña"
+                                   autocomplete="current-password" required>
+                            <button type="button" class="ver-password" data-objetivo="passwordLogin">
+                                <span class="icono-ojo">👁️</span>
+                                <span class="texto-ojo">Mostrar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="opciones-formulario">
+                        <span class="recordar">La sesión se cierra al cerrar el navegador.</span>
+                        <a href="#" id="olvidoPassword">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <button type="submit" class="boton-principal">
+                        INICIAR SESIÓN <span>→</span>
+                    </button>
+
+                    <p class="mensaje" id="mensajeLogin" aria-live="polite"></p>
+
+                    <div class="cuentas-demo">
+                        <p>Cuentas de prueba <small>(contraseña: Demo1234)</small></p>
+                        <button type="button" data-correo="comprador@jjstore.test">Comprador</button>
+                        <button type="button" data-correo="vendedor@jjstore.test">Vendedor</button>
+                    </div>
+
+                    <p class="cambiar-formulario">
+                        ¿No tienes una cuenta?
+                        <a href="register.html" id="irRegistro">Regístrate</a>
+                    </p>
+                </form>
+
+                <p class="pie-formulario">
+                    © <span id="anio"></span> JJ STORE. TODOS LOS DERECHOS RESERVADOS.
+                </p>
+
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+# Si el proyecto se abre como http://localhost/JJSTORE/ (WAMP/XAMPP),
+# todas las peticiones se sirven desde la carpeta public/.
+# Así el código del servidor (app/), la configuración (.env) y la base
+# de datos (database/) nunca quedan expuestos en el navegador.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<FilesMatch "^(\.env.*|composer\.(json|lock)|README\.md)$">
+    Require all denied
+</FilesMatch>

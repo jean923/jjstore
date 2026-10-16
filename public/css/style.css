@@ -1889,3 +1889,475 @@ a.btn:active {
     transform: translateY(-4px);
     box-shadow: 0 5px 15px #00000055;
 }
+
+
+/* ======================================
+   JJ STORE - MARKETPLACE (SESIÓN, STOCK,
+   CARRITO, AVISOS Y SECCIÓN VENDEDORES)
+====================================== */
+
+:root {
+    --exito: #8fd19e;
+    --aviso: #e8c170;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
+
+button:disabled:hover,
+button:disabled:active {
+    transform: none;
+}
+
+/* Zona de sesión del encabezado */
+.zona-sesion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-usuario {
+    position: relative;
+}
+
+.menu-usuario-boton {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 12px 0 5px;
+    background: transparent;
+    color: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.menu-usuario-boton:hover,
+.menu-usuario-boton[aria-expanded="true"] {
+    border-color: #777;
+    background: var(--superficie-2);
+}
+
+.avatar {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    background: var(--cenizo);
+    color: #111;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.menu-usuario-lista {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 150;
+    width: 250px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    background: #141414;
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, .55);
+}
+
+.menu-usuario-lista[hidden] {
+    display: none;
+}
+
+.menu-usuario-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px 10px 12px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--borde);
+    font-size: 12px;
+}
+
+.menu-usuario-info small {
+    color: var(--gris);
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+
+.menu-usuario-info .menu-usuario-tienda {
+    color: var(--cenizo);
+}
+
+.menu-usuario-lista a,
+.menu-usuario-lista button {
+    padding: 10px;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    color: #cfcfcf;
+    font-size: 12px;
+    text-align: left;
+}
+
+.menu-usuario-lista a:hover,
+.menu-usuario-lista button:hover {
+    background: var(--superficie-2);
+    color: var(--blanco);
+    transform: none;
+}
+
+.menu-usuario-lista button {
+    color: var(--error);
+}
+
+/* Avisos flotantes (toast) */
+.zona-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    z-index: 5000;
+    width: min(420px, calc(100% - 32px));
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.toast {
+    padding: 13px 16px;
+    background: #f0efed;
+    color: #111;
+    border-left: 4px solid var(--cenizo);
+    border-radius: 4px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .45);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+    animation: entradaToast .3s ease both;
+}
+
+.toast-exito { border-left-color: #3f9d5a; }
+.toast-error { border-left-color: #d64545; }
+
+.toast.saliendo {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .3s, transform .3s;
+}
+
+@keyframes entradaToast {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tarjetas: imagen, etiquetas de stock y tienda */
+.producto-imagen {
+    position: relative;
+    overflow: hidden;
+}
+
+.etiqueta-producto {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 6px 9px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    border-radius: 2px;
+}
+
+.etiqueta-producto.agotado {
+    background: #0c0c0c;
+    color: var(--blanco);
+    border: 1px solid #555;
+}
+
+.etiqueta-producto.pocas {
+    background: var(--aviso);
+    color: #111;
+}
+
+.producto-tienda {
+    margin: -4px 0 10px;
+    color: var(--gris);
+    font-size: 11px;
+}
+
+/* Carga del catálogo */
+.producto-cargando {
+    animation: none;
+}
+
+.producto-cargando:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.cargando-imagen,
+.cargando-linea {
+    background: linear-gradient(90deg, #1b1b1b 25%, #262626 50%, #1b1b1b 75%);
+    background-size: 200% 100%;
+    animation: brillo 1.3s linear infinite;
+}
+
+.cargando-imagen {
+    height: 270px;
+}
+
+.cargando-linea {
+    height: 11px;
+    margin: 0 0 12px;
+    border-radius: 2px;
+}
+
+.cargando-linea.corta { width: 35%; }
+.cargando-linea.media { width: 55%; }
+
+@keyframes brillo {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+}
+
+/* Vista rápida con variantes reales */
+.modal-label {
+    display: block;
+    color: #eee;
+    font-size: 13px;
+    margin: 20px 0 10px;
+}
+
+.modal-vendedor {
+    color: var(--cenizo);
+    font-size: 12px;
+    margin-top: -10px;
+}
+
+.opciones-tallas button {
+    min-width: 43px;
+    width: auto;
+    padding: 0 10px;
+}
+
+.opciones-tallas button:disabled {
+    color: #555;
+    background: #161616;
+    border-color: #2a2a2a;
+    text-decoration: line-through;
+}
+
+.color-opcion.sin-stock {
+    opacity: .45;
+}
+
+.modal-stock {
+    min-height: 18px;
+    margin-top: 14px;
+    color: var(--gris);
+    font-size: 12px;
+}
+
+.modal-stock.aviso { color: var(--aviso); }
+.modal-stock.error { color: var(--error); }
+
+.modal-agregar {
+    margin-top: 16px;
+}
+
+.modal-agregar:disabled {
+    background: #2a2a2a;
+    color: #777;
+    border-color: #2a2a2a;
+}
+
+/* Carrito con imágenes y envío gratis */
+.item-carrito {
+    align-items: flex-start;
+}
+
+.item-carrito-imagen {
+    width: 70px;
+    height: 84px;
+    flex-shrink: 0;
+    object-fit: cover;
+    background: #242424;
+}
+
+.item-carrito-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-carrito-info p {
+    margin-bottom: 4px;
+}
+
+.item-carrito .item-carrito-precio {
+    color: var(--blanco);
+    font-weight: 700;
+}
+
+.cantidad button:disabled {
+    opacity: .35;
+}
+
+.carrito-vacio p:first-child {
+    color: var(--blanco);
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.envio-progreso {
+    margin-bottom: 18px;
+    font-size: 11px;
+    color: var(--cenizo);
+}
+
+.envio-barra {
+    height: 4px;
+    margin-top: 8px;
+    background: #262626;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.envio-barra span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--cenizo);
+    transition: width .4s ease;
+}
+
+.cart-count.pulso {
+    animation: pulso .45s ease;
+}
+
+@keyframes pulso {
+    50% { transform: scale(1.35); }
+}
+
+/* Sección: vende con nosotros */
+.vender {
+    padding: 90px 7%;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 60px;
+    align-items: center;
+    border-top: 1px solid var(--borde);
+}
+
+.vender-texto h2 {
+    font-size: clamp(26px, 3.4vw, 40px);
+    letter-spacing: -1px;
+    margin-bottom: 18px;
+}
+
+.vender-texto h2 span {
+    color: var(--cenizo);
+}
+
+.vender-texto > p:not(.eyebrow) {
+    max-width: 440px;
+    margin-bottom: 30px;
+    color: #b5b5b5;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+.vender-pasos {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.vender-pasos li {
+    padding: 26px 22px;
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    transition: border-color .3s, transform .3s;
+}
+
+.vender-pasos li:hover {
+    border-color: #77736d;
+    transform: translateY(-5px);
+}
+
+.vender-pasos span {
+    color: var(--cenizo);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.vender-pasos h3 {
+    margin: 30px 0 10px;
+    font-size: 15px;
+}
+
+.vender-pasos p {
+    color: var(--gris);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+@media (max-width: 1050px) {
+    .vender {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 760px) {
+    .vender {
+        padding: 65px 5%;
+    }
+
+    .vender-pasos {
+        grid-template-columns: 1fr;
+    }
+
+    .vender-pasos h3 {
+        margin-top: 14px;
+    }
+
+    .menu-usuario-nombre {
+        display: none;
+    }
+
+    .menu-usuario-boton {
+        padding-right: 9px;
+        min-height: 36px;
+    }
+
+    .avatar {
+        width: 26px;
+        height: 26px;
+    }
+
+    .cargando-imagen {
+        height: 210px;
+    }
+
+    .zona-sesion {
+        gap: 6px;
+    }
+}
+
+@media (max-width: 400px) {
+    .zona-sesion {
+        flex: 1;
+    }
+}
+
+/* Con el carrito abierto, el botón de WhatsApp no tapa "Ir a pagar" */
+body.carrito-abierto .whatsapp-flotante {
+    display: none;
+}

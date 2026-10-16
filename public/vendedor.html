@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de vendedor | JJ STORE</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/panel.css">
+
+    <script src="js/api.js" defer></script>
+    <script src="js/vendedor.js" defer></script>
+</head>
+<body>
+
+    <header class="navbar navbar-simple">
+        <a href="index.html" class="logo" aria-label="JJ STORE, ir a la tienda">
+            JJ<span>STORE.</span>
+            <small>PANEL DE VENDEDOR</small>
+        </a>
+
+        <div class="acciones-usuario">
+            <a href="index.html" class="enlace-volver">Ver tienda ↗</a>
+            <div class="zona-sesion" id="zonaSesion"></div>
+        </div>
+    </header>
+
+    <main class="pagina">
+
+        <p class="cargando-pagina" id="cargando">Cargando tu panel...</p>
+
+        <!-- ============ ABRIR TIENDA (cuentas sin tienda) ============ -->
+        <section id="abrirTienda" hidden>
+            <div class="pagina-encabezado">
+                <div>
+                    <p class="eyebrow">VENDE EN JJ STORE</p>
+                    <h1>ABRE TU TIENDA<span>.</span></h1>
+                </div>
+                <p class="texto-suave">Es gratis. Podrás publicar productos de inmediato.</p>
+            </div>
+
+            <form class="tarjeta" id="formAbrirTienda" novalidate style="max-width:640px">
+                <div class="form-grid">
+                    <div class="campo completo" data-campo>
+                        <label for="abrirNombre">Nombre de tu tienda</label>
+                        <input id="abrirNombre" name="tienda_nombre" placeholder="Ej: Barrio Norte Studio" required>
+                    </div>
+                    <div class="campo completo" data-campo>
+                        <label for="abrirCiudad">Ciudad</label>
+                        <input id="abrirCiudad" name="tienda_ciudad" placeholder="Ej: Medellín" required>
+                    </div>
+                    <div class="campo completo" data-campo>
+                        <label for="abrirDescripcion">Cuéntale a tus clientes sobre tu marca <small>(opcional)</small></label>
+                        <textarea id="abrirDescripcion" name="tienda_descripcion" maxlength="500"></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn" style="margin-top:22px">ABRIR MI TIENDA ↗</button>
+            </form>
+        </section>
+
+        <!-- ============ PANEL ============ -->
+        <div class="panel-grid" id="panel" hidden>
+
+            <nav class="panel-nav" aria-label="Secciones del panel">
+                <div class="panel-tienda">
+                    <small>MI TIENDA</small>
+                    <strong id="navTienda"></strong>
+                </div>
+                <a href="#resumen" data-seccion="resumen">Resumen</a>
+                <a href="#productos" data-seccion="productos">Productos</a>
+                <a href="#ventas" data-seccion="ventas">
+                    Ventas <span class="contador-nav" id="contVentas" title="Por despachar" hidden></span>
+                </a>
+                <a href="#tienda" data-seccion="tienda">Mi tienda</a>
+            </nav>
+
+            <div>
+                <!-- RESUMEN -->
+                <section class="panel-seccion" id="seccion-resumen" aria-labelledby="saludo">
+                    <div class="seccion-cabecera">
+                        <div>
+                            <p class="eyebrow">PANEL DE VENDEDOR</p>
+                            <h2 id="saludo">Hola</h2>
+                        </div>
+                        <button type="button" class="btn" data-nuevo-producto>+ NUEVO PRODUCTO</button>
+                    </div>
+
+                    <div class="kpis" id="kpis"></div>
+
+                    <div class="resumen-grid">
+                        <div class="tarjeta">
+                            <h3 class="tarjeta-titulo">Ventas de los últimos 7 días</h3>
+                            <div class="grafico" id="grafico"></div>
+                        </div>
+
+                        <div class="tarjeta">
+                            <h3 class="tarjeta-titulo">Más vendidos</h3>
+                            <ul class="lista-simple" id="masVendidos"></ul>
+                        </div>
+
+                        <div class="tarjeta ancho-completo">
+                            <h3 class="tarjeta-titulo">Inventario bajo <small class="texto-suave">(3 unidades o menos)</small></h3>
+                            <ul class="lista-simple" id="stockBajo"></ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PRODUCTOS -->
+                <section class="panel-seccion" id="seccion-productos" hidden>
+                    <div class="seccion-cabecera">
+                        <h2>Mis productos</h2>
+                        <div class="barra-herramientas">
+                            <input type="search" class="buscador-panel" id="filtroProductos"
+                                   placeholder="Buscar en mis productos..." aria-label="Buscar en mis productos">
+                            <button type="button" class="btn" data-nuevo-producto>+ NUEVO PRODUCTO</button>
+                        </div>
+                    </div>
+                    <div id="tablaProductos"></div>
+                </section>
+
+                <!-- VENTAS -->
+                <section class="panel-seccion" id="seccion-ventas" hidden>
+                    <div class="seccion-cabecera">
+                        <h2>Ventas</h2>
+                        <p class="texto-suave">Actualiza el estado y le avisamos al comprador por correo.</p>
+                    </div>
+
+                    <div class="filtros-estado" id="filtrosVentas">
+                        <button type="button" class="filtro activo" data-estado="">Todas</button>
+                        <button type="button" class="filtro" data-estado="nuevo">Nuevas</button>
+                        <button type="button" class="filtro" data-estado="preparando">Preparando</button>
+                        <button type="button" class="filtro" data-estado="enviado">Enviadas</button>
+                        <button type="button" class="filtro" data-estado="entregado">Entregadas</button>
+                        <button type="button" class="filtro" data-estado="cancelado">Canceladas</button>
+                    </div>
+
+                    <div id="listaVentas"></div>
+                </section>
+
+                <!-- MI TIENDA -->
+                <section class="panel-seccion" id="seccion-tienda" hidden>
+                    <div class="seccion-cabecera">
+                        <h2>Mi tienda</h2>
+                    </div>
+
+                    <form class="tarjeta" id="formTienda" novalidate style="max-width:640px">
+                        <div class="form-grid">
+                            <div class="campo completo" data-campo>
+                                <label for="tiendaNombre">Nombre de la tienda</label>
+                                <input id="tiendaNombre" name="nombre" required>
+                            </div>
+                            <div class="campo completo" data-campo>
+                                <label for="tiendaCiudad">Ciudad</label>
+                                <input id="tiendaCiudad" name="ciudad" required>
+                            </div>
+                            <div class="campo completo" data-campo>
+                                <label for="tiendaDescripcion">Descripción</label>
+                                <textarea id="tiendaDescripcion" name="descripcion" maxlength="500"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn" style="margin-top:22px">GUARDAR CAMBIOS</button>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============ FORMULARIO DE PRODUCTO ============ -->
+    <dialog class="dialogo" id="dialogoProducto" aria-labelledby="tituloProducto">
+        <form id="formProducto" novalidate>
+            <div class="dialogo-cabecera">
+                <h2 id="tituloProducto">Nuevo producto</h2>
+                <button type="button" class="dialogo-cerrar" data-cerrar aria-label="Cerrar">&times;</button>
+            </div>
+
+            <div class="dialogo-cuerpo">
+                <div class="seccion-form">
+                    <div class="form-grid">
+                        <div class="campo completo" data-campo>
+                            <label for="prodNombre">Nombre</label>
+                            <input id="prodNombre" name="nombre" maxlength="150" placeholder="Ej: Hoodie Oversize Black" required>
+                        </div>
+
+                        <div class="campo" data-campo>
+                            <label for="prodCategoria">Categoría</label>
+                            <select id="prodCategoria" name="categoria_id" required></select>
+                        </div>
+
+                        <div class="campo" data-campo>
+                            <label for="prodPrecio">Precio (COP)</label>
+                            <input id="prodPrecio" name="precio" type="number" min="1000" step="100"
+                                   inputmode="numeric" placeholder="Ej: 85000" required>
+                        </div>
+
+                        <div class="campo completo" data-campo>
+                            <label for="prodDescripcion">Descripción <small>(opcional)</small></label>
+                            <textarea id="prodDescripcion" name="descripcion" maxlength="2000"
+                                      placeholder="Material, fit, detalles..."></textarea>
+                        </div>
+
+                        <div class="campo completo">
+                            <label class="interruptor">
+                                <input type="checkbox" id="prodActivo" checked>
+                                <span class="pista"></span>
+                                <span>Visible en la tienda</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="seccion-form">
+                    <span class="etiqueta-campo">Imagen</span>
+                    <div class="zona-imagen" data-campo>
+                        <div class="vista-imagen" id="vistaImagen">Sin imagen</div>
+                        <div class="campo">
+                            <label for="prodImagen">Subir foto <small>(JPG, PNG o WEBP · máx. 2 MB)</small></label>
+                            <input type="file" id="prodImagen" name="imagen" accept="image/jpeg,image/png,image/webp">
+                            <label for="prodImagenUrl" style="margin-top:8px">o pega la URL de una imagen <small>(opcional)</small></label>
+                            <input type="url" id="prodImagenUrl" name="imagen_url" placeholder="https://...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="seccion-form" data-campo>
+                    <span class="etiqueta-campo">Tallas</span>
+                    <div class="chips" id="chipsTallas"></div>
+
+                    <span class="etiqueta-campo" style="display:block;margin:18px 0 12px">Colores</span>
+                    <div class="chips" id="chipsColores"></div>
+
+                    <span class="etiqueta-campo" style="display:block;margin:22px 0 6px">Unidades disponibles por talla y color</span>
+                    <div class="matriz-contenedor" id="matrizStock"></div>
+                    <input type="hidden" name="variantes">
+                </div>
+            </div>
+
+            <div class="dialogo-pie">
+                <button type="button" class="btn-secundario" data-cerrar>CANCELAR</button>
+                <button type="submit" class="btn" id="guardarProducto">GUARDAR PRODUCTO</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- ============ CONFIRMACIÓN ============ -->
+    <dialog class="dialogo dialogo-pequeno" id="dialogoConfirmar" aria-labelledby="confirmarTitulo">
+        <form method="dialog">
+            <div class="dialogo-cabecera">
+                <h2 id="confirmarTitulo">¿Estás seguro?</h2>
+            </div>
+            <div class="dialogo-cuerpo">
+                <p id="confirmarTexto"></p>
+            </div>
+            <div class="dialogo-pie">
+                <button class="btn-secundario" value="no">CANCELAR</button>
+                <button class="btn" value="si" id="confirmarSi">CONFIRMAR</button>
+            </div>
+        </form>
+    </dialog>
+
+</body>
+</html>
