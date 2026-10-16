@@ -1,0 +1,573 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --fondo: #0c0c0c;
+    --superficie: #151515;
+    --superficie2: #1d1d1d;
+    --blanco: #f0efed;
+    --cenizo: #c9c5bd;
+    --gris: #999;
+    --borde: #303030;
+    --error: #ff8585;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--fondo);
+    color: var(--blanco);
+    min-height: 100vh;
+}
+
+button, input {
+    font: inherit;
+}
+
+button, a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.pagina-login {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 75px 24px 35px;
+    position: relative;
+    overflow: hidden;
+}
+
+.pagina-login::before {
+    content: "";
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: #c9c5bd08;
+    filter: blur(80px);
+    top: -200px;
+    left: -200px;
+    pointer-events: none;
+}
+
+.volver {
+    position: absolute;
+    top: 28px;
+    left: 35px;
+    color: var(--gris);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.3s;
+}
+
+.volver:hover {
+    color: var(--cenizo);
+}
+
+.contenedor-login {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    width: 100%;
+    max-width: 1000px;
+    min-height: 610px;
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 30px 100px #00000070;
+    animation: aparecer 0.7s ease both;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* LADO VISUAL */
+
+.lado-visual {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 38px;
+    min-height: 610px;
+    overflow: hidden;
+    background:
+        linear-gradient(0deg, #080808 0%, #080808d9 35%, #08080865 100%),
+        url('https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=1000&q=85')
+        center / cover no-repeat;
+    border-right: 1px solid var(--borde);
+}
+
+.lado-visual::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid #ffffff18;
+    pointer-events: none;
+}
+
+.marca {
+    position: relative;
+    z-index: 1;
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    color: var(--blanco);
+}
+
+.marca span {
+    color: var(--cenizo);
+    font-weight: 400;
+}
+
+.visual-texto {
+    position: relative;
+    z-index: 1;
+    margin: auto 0;
+    padding: 45px 0;
+}
+
+.etiqueta {
+    color: var(--cenizo);
+    font-size: 10px;
+    letter-spacing: 3px;
+    font-weight: 600;
+}
+
+.visual-texto h1 {
+    font-size: clamp(40px, 5vw, 62px);
+    line-height: 1.08;
+    letter-spacing: -3px;
+    margin: 22px 0;
+    font-weight: 800;
+}
+
+.visual-texto > p:last-child {
+    color: #c0c0c0;
+    font-size: 13px;
+    line-height: 1.9;
+    max-width: 280px;
+}
+
+.visual-pie {
+    position: relative;
+    z-index: 1;
+    color: #aaa;
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+.marca.movil {
+    display: none;
+}
+
+/* FORMULARIOS */
+
+.lado-formulario {
+    padding: 48px clamp(25px, 5vw, 65px) 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.encabezado-formulario {
+    margin-bottom: 28px;
+}
+
+.encabezado-formulario .etiqueta {
+    margin-bottom: 12px;
+}
+
+.encabezado-formulario h2 {
+    font-size: 32px;
+    letter-spacing: -1.2px;
+    font-weight: 700;
+}
+
+.subtitulo {
+    color: var(--gris);
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.formulario {
+    display: none;
+}
+
+.formulario.activo {
+    display: block;
+    animation: aparecer 0.35s ease both;
+}
+
+.campo {
+    margin-bottom: 19px;
+}
+
+.campo label {
+    display: block;
+    color: #dedbd5;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 9px;
+}
+
+.campo input {
+    display: block;
+    width: 100%;
+    height: 49px;
+    padding: 0 15px;
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    outline: none;
+    background: #101010;
+    color: var(--blanco);
+    font-size: 12px;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.campo input::placeholder {
+    color: #686868;
+}
+
+.campo input:focus {
+    border-color: var(--cenizo);
+    box-shadow: 0 0 0 3px #c9c5bd12;
+}
+
+.opciones-formulario {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin: 3px 0 24px;
+}
+
+.recordar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gris);
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.recordar input {
+    accent-color: var(--cenizo);
+    cursor: pointer;
+}
+
+.opciones-formulario > a {
+    color: var(--cenizo);
+    text-decoration: none;
+    font-size: 10px;
+}
+
+.opciones-formulario > a:hover {
+    text-decoration: underline;
+}
+
+.boton-principal {
+    width: 100%;
+    min-height: 49px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--cenizo);
+    border-radius: 6px;
+    background: var(--cenizo);
+    color: #111;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.25s, color 0.25s, transform 0.25s;
+}
+
+.boton-principal span {
+    font-size: 19px;
+}
+
+.boton-principal:hover {
+    background: transparent;
+    color: var(--cenizo);
+    transform: translateY(-2px);
+}
+
+.cambiar-formulario {
+    text-align: center;
+    color: var(--gris);
+    font-size: 11px;
+    margin-top: 24px;
+}
+
+.cambiar-formulario button {
+    background: none;
+    border: none;
+    color: var(--cenizo);
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 3px;
+}
+
+.cambiar-formulario button:hover {
+    text-decoration: underline;
+}
+
+.mensaje {
+    color: var(--cenizo);
+    font-size: 11px;
+    line-height: 1.6;
+    margin-top: 12px;
+}
+
+.mensaje:empty {
+    display: none;
+}
+
+.terminos {
+    margin: 5px 0 20px;
+}
+
+.pie-formulario {
+    color: #666;
+    text-align: center;
+    font-size: 8px;
+    letter-spacing: 0.7px;
+    margin-top: 30px;
+}
+
+/* REGISTRO */
+
+.modo-registro .lado-formulario {
+    padding-top: 32px;
+    padding-bottom: 22px;
+}
+
+.modo-registro .encabezado-formulario {
+    margin-bottom: 20px;
+}
+
+.modo-registro .encabezado-formulario h2 {
+    font-size: 29px;
+}
+
+.modo-registro .campo {
+    margin-bottom: 13px;
+}
+
+.modo-registro .campo input {
+    height: 44px;
+}
+
+.modo-registro .pie-formulario {
+    margin-top: 22px;
+}
+
+/* TABLET */
+
+@media (max-width: 800px) {
+    .contenedor-login {
+        max-width: 560px;
+        grid-template-columns: 1fr;
+    }
+
+    .lado-visual {
+        display: none;
+    }
+
+    .lado-formulario {
+        padding: 42px clamp(24px, 7vw, 55px) 28px;
+    }
+
+    .marca.movil {
+        display: block;
+        margin-bottom: 35px;
+    }
+
+    .pagina-login {
+        padding-top: 85px;
+    }
+}
+
+/* CELULARES */
+
+@media (max-width: 480px) {
+    .pagina-login {
+        padding: 75px 14px 20px;
+        align-items: flex-start;
+    }
+
+    .volver {
+        top: 25px;
+        left: 18px;
+    }
+
+    .contenedor-login {
+        border-radius: 10px;
+        min-height: auto;
+    }
+
+    .lado-formulario {
+        padding: 30px 21px 23px;
+    }
+
+    .marca.movil {
+        margin-bottom: 27px;
+    }
+
+    .encabezado-formulario h2 {
+        font-size: 28px;
+    }
+
+    .opciones-formulario > a {
+        font-size: 9px;
+    }
+
+    .modo-registro .lado-formulario {
+        padding-top: 28px;
+    }
+
+    .modo-registro .marca.movil {
+        margin-bottom: 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+/* PÁGINA INDEPENDIENTE DE REGISTRO */
+.register-contenedor {
+    max-width: 1050px;
+}
+
+.register-formulario {
+    padding-top: 32px;
+    padding-bottom: 24px;
+}
+
+.register-formulario .encabezado-formulario {
+    margin-bottom: 20px;
+}
+
+.register-formulario .campo {
+    margin-bottom: 13px;
+}
+
+.register-formulario .campo input {
+    height: 44px;
+}
+
+.register-formulario .pie-formulario {
+    margin-top: 22px;
+}
+
+.cambiar-formulario a {
+    color: var(--cenizo);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.cambiar-formulario a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 800px) {
+    .register-contenedor .lado-visual {
+        display: none;
+    }
+
+    .register-formulario {
+        padding: 35px clamp(24px, 7vw, 55px) 25px;
+    }
+}
+
+/* BOTONES DINÁMICOS PARA MOSTRAR Y OCULTAR CONTRASEÑAS */
+.campo {
+    position: relative;
+}
+
+.ver-password {
+    position: absolute;
+    right: 10px;
+    top: 39px;
+    padding: 7px 10px;
+    border: 1px solid #383838;
+    border-radius: 10px;
+    background: #202020;
+    color: #c9c5bd;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.25s ease,
+                color 0.25s ease,
+                transform 0.25s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
+}
+
+.ver-password:hover {
+    background: #c9c5bd;
+    color: #111;
+    border-color: #c9c5bd;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 5px 15px rgba(201, 197, 189, 0.18);
+}
+
+.ver-password:active {
+    transform: scale(0.94);
+}
+
+.ver-password .icono-ojo {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.ver-password:hover .icono-ojo {
+    transform: rotate(-10deg) scale(1.15);
+}
+
+/* Animación cuando cambia el estado */
+.ver-password.cambiado {
+    animation: efectoOjo 0.3s ease;
+}
+
+@keyframes efectoOjo {
+    0% {
+        transform: scale(0.9);
+    }
+    60% {
+        transform: scale(1.12);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Espacio para que el botón no tape el texto */
+.campo input[type="password"],
+.campo input[type="text"] {
+    padding-right: 100px;
+}
